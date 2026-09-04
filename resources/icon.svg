@@ -1,0 +1,8 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <rect width="128" height="128" rx="24" fill="#1e1e1e"/>
+  <rect x="10" y="10" width="108" height="108" rx="18" fill="#2d2d2d"/>
+  <text x="50" y="82" font-family="Menlo, Consolas, monospace" font-size="64" font-weight="bold" text-anchor="middle" fill="#89d185">@</text>
+  <text x="94" y="58" font-family="Menlo, Consolas, monospace" font-size="22" font-weight="bold" text-anchor="middle" fill="#d4d4d4">#L</text>
+  <rect x="80" y="70" width="28" height="7" rx="3.5" fill="#d4d4d4"/>
+  <rect x="80" y="84" width="20" height="7" rx="3.5" fill="#d4d4d4"/>
+</svg>

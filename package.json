@@ -1,0 +1,135 @@
+{
+  "name": "copy-line-ref",
+  "displayName": "Copy Line Ref",
+  "description": "以快捷鍵複製目前檔案與選取行的參照（@path#L10-20），或在 GitHub／GitLab／Bitbucket 開啟目前分支的檔案網頁。",
+  "version": "0.1.0",
+  "publisher": "workjerry",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lazyjerry/copy-line-ref-ext.git"
+  },
+  "homepage": "https://github.com/lazyjerry/copy-line-ref-ext#readme",
+  "bugs": {
+    "url": "https://github.com/lazyjerry/copy-line-ref-ext/issues"
+  },
+  "keywords": [
+    "line",
+    "reference",
+    "copy",
+    "github",
+    "gitlab",
+    "permalink"
+  ],
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "extensionKind": [
+    "ui"
+  ],
+  "icon": "resources/icon.png",
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "copyLineRef.copyReference",
+        "title": "複製行參照",
+        "category": "Copy Line Ref"
+      },
+      {
+        "command": "copyLineRef.openRemote",
+        "title": "在遠端網頁開啟目前檔案",
+        "category": "Copy Line Ref"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "copyLineRef.copyReference",
+        "key": "ctrl+alt+r",
+        "mac": "cmd+alt+r",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "copyLineRef.openRemote",
+        "key": "ctrl+alt+o",
+        "mac": "cmd+alt+o",
+        "when": "editorTextFocus"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "copyLineRef.copyReference",
+          "when": "resourceScheme == file",
+          "group": "copyLineRef@1"
+        },
+        {
+          "command": "copyLineRef.openRemote",
+          "when": "resourceScheme == file",
+          "group": "copyLineRef@2"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "copyLineRef.copyReference",
+          "when": "resourceScheme == file && !explorerResourceIsFolder",
+          "group": "copyLineRef@1"
+        },
+        {
+          "command": "copyLineRef.openRemote",
+          "when": "resourceScheme == file && !explorerResourceIsFolder",
+          "group": "copyLineRef@2"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Copy Line Ref",
+      "properties": {
+        "copyLineRef.hosts": {
+          "type": "object",
+          "default": {},
+          "additionalProperties": {
+            "type": "string",
+            "enum": [
+              "github",
+              "gitlab",
+              "bitbucket"
+            ]
+          },
+          "description": "自架 git 主機對應的網頁格式，鍵為 hostname，例如 {\"git.example.com\": \"gitlab\"}。github.com／gitlab.com／bitbucket.org 免設定。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc -p . --noEmit",
+    "build:extension": "esbuild src/extension.ts --bundle --platform=node --format=cjs --external:vscode --outfile=out/extension.js --sourcemap",
+    "build:tests": "tsc -p .",
+    "build": "npm run typecheck && npm run build:extension",
+    "vscode:prepublish": "npm run build",
+    "lint": "eslint .",
+    "test:unit": "npm run build:tests && mocha --ui tdd --timeout 10000 \"out/test/unit/**/*.test.js\"",
+    "test:integration": "node ./out/test/runTest.js",
+    "test": "npm run build && npm run test:unit && npm run test:integration",
+    "check": "npm run lint && npm run test",
+    "package:vsix": "npm run check && vsce package --no-dependencies",
+    "release": "./scripts/publish.sh"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^24.0.0",
+    "@types/vscode": "^1.90.0",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^3.6.0",
+    "esbuild": "^0.25.0",
+    "eslint": "^9.0.0",
+    "glob": "^11.0.0",
+    "mocha": "^11.0.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.0.0"
+  }
+}
