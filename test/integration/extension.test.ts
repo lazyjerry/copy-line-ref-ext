@@ -7,7 +7,7 @@ import * as vscode from 'vscode';
 
 import type { CopyLineRefApi } from '../../src/extension';
 
-const EXTENSION_ID = 'workjerry.copy-line-ref';
+const EXTENSION_ID = 'workjerry.at-line-ref';
 
 function git(cwd: string, ...args: string[]): void {
   execFileSync('git', args, { cwd, stdio: 'pipe' });
@@ -26,7 +26,7 @@ async function openWithSelection(file: string, selection?: vscode.Selection): Pr
   }
 }
 
-suite('Copy Line Ref 延伸模組', () => {
+suite('At Line Ref 延伸模組', () => {
   let workspaceDir: string;
   let workspaceFile: string;
   let scratchDir: string;
