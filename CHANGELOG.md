@@ -1,8 +1,16 @@
 # Changelog
 
-本檔案記錄 Copy Line Ref 的版本變更，格式依循 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.1.0/)，版本號依循 [Semantic Versioning](https://semver.org/lang/zh-TW/)。
+本檔案記錄 At Line Ref 的版本變更，格式依循 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.1.0/)，版本號依循 [Semantic Versioning](https://semver.org/lang/zh-TW/)。
 
 ## [Unreleased]
+
+## [0.1.1] - 2026-09-04
+
+### Changed
+
+- 複製行參照成功後改為右下角通知顯示複製內容，原本只在狀態列短暫顯示 3 秒。
+
+## [0.1.0] - 2026-09-04
 
 ### Added
 

@@ -1,8 +1,8 @@
 {
-  "name": "copy-line-ref",
-  "displayName": "Copy Line Ref",
+  "name": "at-line-ref",
+  "displayName": "At Line Ref",
   "description": "以快捷鍵複製目前檔案與選取行的參照（@path#L10-20），或在 GitHub／GitLab／Bitbucket 開啟目前分支的檔案網頁。",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "workjerry",
   "license": "Apache-2.0",
   "repository": {
@@ -37,12 +37,12 @@
       {
         "command": "copyLineRef.copyReference",
         "title": "複製行參照",
-        "category": "Copy Line Ref"
+        "category": "At Line Ref"
       },
       {
         "command": "copyLineRef.openRemote",
         "title": "在遠端網頁開啟目前檔案",
-        "category": "Copy Line Ref"
+        "category": "At Line Ref"
       }
     ],
     "keybindings": [
@@ -86,7 +86,7 @@
       ]
     },
     "configuration": {
-      "title": "Copy Line Ref",
+      "title": "At Line Ref",
       "properties": {
         "copyLineRef.hosts": {
           "type": "object",

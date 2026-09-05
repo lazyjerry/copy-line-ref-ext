@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run Copy Line Ref",
+      "name": "Run At Line Ref",
       "type": "extensionHost",
       "request": "launch",
       "args": [

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 發布 Copy Line Ref 到 VS Code Marketplace。
+# 發布 At Line Ref 到 VS Code Marketplace。
 #
 # 兩階段。版本準備與上傳分開，中間必須有一個 commit，
 # 這樣每個發布出去的版本都對應得到可追溯的 commit。

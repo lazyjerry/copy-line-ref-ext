@@ -1,4 +1,4 @@
-# Copy Line Ref
+# At Line Ref
 
 以快捷鍵複製目前檔案與選取行的參照（`@src/a.ts#L10-20`），或直接在 GitHub／GitLab／Bitbucket 開啟目前分支的檔案網頁並定位到選取行。
 
@@ -15,9 +15,9 @@
 
 ## 使用方式
 
-1. 在編輯器選取要參照的行（或不選，只要檔案），按 `Cmd+Alt+R`，狀態列會短暫顯示複製的內容。
+1. 在編輯器選取要參照的行（或不選，只要檔案），按 `Cmd+Alt+R`，右下角會跳出通知顯示複製的內容。
 2. 按 `Cmd+Alt+O` 在瀏覽器開啟同一段程式碼的遠端頁面。被拒絕時看訊息：通常是還沒 `git push`。
-3. 從命令面板也可執行「Copy Line Ref: 複製行參照」與「Copy Line Ref: 在遠端網頁開啟目前檔案」。
+3. 從命令面板也可執行「At Line Ref: 複製行參照」與「At Line Ref: 在遠端網頁開啟目前檔案」。
 
 ### 快捷鍵
 
@@ -50,6 +50,19 @@
 | Bitbucket | `/src/<分支>/<路徑>` | `#lines-10` | `#lines-10:20` |
 
 分支用的是 upstream 的遠端分支名（本機 `feat` 追蹤 `origin/feature-x` 時開 `feature-x`）。
+
+## 與 GitLens 的重疊
+
+[GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens) 右鍵選單的「Open on Remote (Web) → Open File on Remote」和 `Cmd+Alt+O` 做同一件事：開目前檔案的遠端網頁，有選取就帶行號。兩者不撞鍵（GitLens 的 `gitlens.openFileOnRemote` 預設沒有綁鍵），但功能重疊，已裝 GitLens 的話右鍵會看到兩個「在遠端開啟」。
+
+本擴充多做的：
+
+- **開之前先確認遠端真的有這份內容**：沒有 upstream、本機有未推送 commit、檔案 untracked 等情況會擋下並說明原因；GitLens 直接組網址開出去，還沒 push 就是 404。
+- **分支用 upstream 的遠端分支名**，不是本機分支名。
+- **不限工作區**：走 `git` CLI，工作區外的檔案也能開；GitLens 依賴內建 Git extension 認得的儲存庫。
+- `Cmd+Alt+R` 的 `@path#L` 參照格式，GitLens 沒有對應功能（它的 Copy Remote File URL 複製的是網址）。
+
+GitLens 多做的：「Open File on Remote From...」可挑別的分支、tag 或 commit，「Open Commit on Remote」開 commit 頁，以及整套 blame／history／compare。只需要基本的開遠端且不在意 404 的話，兩者擇一即可；要收掉 GitLens 那個右鍵項目可調 `gitlens.menus`。
 
 ## 限制
 

@@ -10,7 +10,7 @@ import { buildFileUrl } from './core/web/buildFileUrl';
 import { detectProvider } from './core/web/detectProvider';
 import { querySyncInput } from './git/gitQuery';
 
-const PREFIX = 'Copy Line Ref：';
+const PREFIX = 'At Line Ref：';
 
 export type OpenRemoteResult = { ok: true; url: string } | { ok: false; reason: string };
 
@@ -74,7 +74,7 @@ async function copyReference(target: Target | undefined): Promise<string | undef
   const folder = vscode.workspace.getWorkspaceFolder(target.uri);
   const reference = formatReference(toReferencePath(target.uri.fsPath, folder?.uri.fsPath), target.range);
   await vscode.env.clipboard.writeText(reference);
-  vscode.window.setStatusBarMessage(`${PREFIX}已複製 ${reference}`, 3000);
+  void vscode.window.showInformationMessage(`${PREFIX}已複製 ${reference}`);
   return reference;
 }
 
