@@ -24,6 +24,7 @@
 - `src/core/` 是純 Node 純函式，**絕不 import vscode、不碰檔案系統與子行程**——單元測試靠它。「要不要開遠端、為什麼不開」全在 `core/git/syncDecision.ts` 的決策表，`extension.ts` 只負責把 vscode 的 editor／selection／設定轉成 plain object，再把結果換成訊息。
 - `src/git/gitQuery.ts` 是唯一跑 `git` 的地方，只組資料不做判斷；指令輸出的解析放 `core/git/parseStatus.ts` 以便用 fixture 字串測。
 - 遠端偵測刻意不用 VS Code 內建 Git extension API：它對工作區外的檔案預設不開所屬 repo，CLI 沒有這個限制。
+- 但 git CLI 只對「受信任工作區資料夾內」的檔案執行（`core/git/workspaceGate.ts`，realpath 後比對）：repo 的 `filter.<名>.clean` 會在 `git status` 時執行，`-c` 關不完；其餘指令另加 `-c core.fsmonitor=false`。
 
 ## 環境注意事項
 

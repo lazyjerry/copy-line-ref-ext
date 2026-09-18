@@ -28,6 +28,26 @@ suite('detectProvider', () => {
     assert.equal(detectProvider('git.example.com', {}), null);
   });
 
+  test('公開主機的子網域', () => {
+    assert.equal(detectProvider('api.github.com', {}), 'github');
+    assert.equal(detectProvider('self.gitlab.com', {}), 'gitlab');
+  });
+
+  test('公開主機優先於字樣猜測', () => {
+    assert.equal(detectProvider('github.gitlab.com', {}), 'gitlab');
+  });
+
+  test('不是合法主機名時回 null，不靠字樣猜', () => {
+    assert.equal(detectProvider('github.com@evil.com', {}), null);
+    assert.equal(detectProvider('github.com:evil', {}), null);
+    assert.equal(detectProvider('github.com/evil', {}), null);
+  });
+
+  test('IPv6 主機可用設定覆寫', () => {
+    assert.equal(detectProvider('[::1]', { '[::1]': 'gitlab' }), 'gitlab');
+    assert.equal(detectProvider('[::1]', {}), null);
+  });
+
   test('設定值不是三者之一時忽略', () => {
     assert.equal(detectProvider('git.example.com', { 'git.example.com': 'gitea' }), null);
   });

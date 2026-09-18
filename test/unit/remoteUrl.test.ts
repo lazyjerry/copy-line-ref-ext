@@ -61,6 +61,20 @@ suite('parseRemoteUrl', () => {
     assert.equal(parseRemoteUrl('file:///srv/git/repo.git'), null);
   });
 
+  test('拒絕主機段殘留 @ 的網址（多重 @ 偽裝主機）', () => {
+    assert.equal(parseRemoteUrl('x@github.com@evil.com:o/r'), null);
+    assert.equal(parseRemoteUrl('x@y@github.com:o/r.git'), null);
+    assert.equal(parseRemoteUrl('https://a@github.com@evil.com/o/r'), null);
+    assert.equal(parseRemoteUrl('ssh://git@github.com@evil.com/o/r.git'), null);
+  });
+
+  test('單一 @ 的正常網址不受影響', () => {
+    assert.equal(parseRemoteUrl('git@github.com:o/r.git')?.authority, 'github.com');
+    assert.equal(parseRemoteUrl('github.com:o/r.git')?.authority, 'github.com');
+    assert.equal(parseRemoteUrl('ssh://git@gitlab.com/g/r.git')?.authority, 'gitlab.com');
+    assert.equal(parseRemoteUrl('https://user:token@bitbucket.org/o/r.git')?.authority, 'bitbucket.org');
+  });
+
   test('拒絕不足 owner/repo 兩段的路徑', () => {
     assert.equal(parseRemoteUrl('https://github.com/only'), null);
     assert.equal(parseRemoteUrl('git@github.com:only.git'), null);

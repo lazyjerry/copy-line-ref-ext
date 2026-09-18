@@ -32,6 +32,8 @@ suite('At Line Ref 延伸模組', () => {
   let scratchDir: string;
   let repoDir: string;
   let repoFile: string;
+  let outsideFile: string;
+  let outsideRepoFile: string;
 
   suiteSetup(() => {
     const folders = vscode.workspace.workspaceFolders;
@@ -41,9 +43,10 @@ suite('At Line Ref 延伸模組', () => {
     workspaceFile = path.join(workspaceDir, 'src', 'a.txt');
     fs.writeFileSync(workspaceFile, 'line1\nline2\nline3\n');
 
-    // 工作區之外、/private/tmp 底下：同時驗證「工作區外的檔案也能開遠端」
+    // bare repo 與「工作區外」的檔案放在 /private/tmp 底下；會被查 git 的 repo 放在工作區內，
+    // 因為工作區外的檔案不跑 git（repo 設定的 clean filter 等外部指令無法全部關掉）。
     scratchDir = fs.mkdtempSync('/private/tmp/clr-repo-');
-    repoDir = path.join(scratchDir, 'repo');
+    repoDir = path.join(workspaceDir, 'repo');
     const bareDir = path.join(scratchDir, 'origin.git');
     fs.mkdirSync(repoDir);
     git(scratchDir, 'init', '--bare', '-b', 'main', bareDir);
@@ -58,11 +61,20 @@ suite('At Line Ref 延伸模組', () => {
     git(repoDir, 'push', '-q', '-u', 'origin', 'main');
     // 追蹤 ref 已建立，之後把網址換成 GitHub 形式即可離線驗 URL 組合
     git(repoDir, 'remote', 'set-url', 'origin', 'git@github.com:foo/bar.git');
+
+    outsideFile = path.join(scratchDir, 'outside.txt');
+    fs.writeFileSync(outsideFile, 'line1\n');
+    const outsideRepo = path.join(scratchDir, 'outside-repo');
+    fs.mkdirSync(outsideRepo);
+    git(outsideRepo, 'init', '-q', '-b', 'main');
+    outsideRepoFile = path.join(outsideRepo, 'a.txt');
+    fs.writeFileSync(outsideRepoFile, 'line1\n');
   });
 
   suiteTeardown(async () => {
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
     fs.rmSync(scratchDir, { recursive: true, force: true });
+    fs.rmSync(repoDir, { recursive: true, force: true });
   });
 
   teardown(async () => {
@@ -87,10 +99,23 @@ suite('At Line Ref 延伸模組', () => {
 
   test('工作區外的檔案退回絕對路徑', async () => {
     const api = await getApi();
-    await openWithSelection(repoFile);
+    await openWithSelection(outsideFile, new vscode.Selection(0, 0, 0, 3));
     const reference = await api.copyReference();
     assert.ok(reference !== undefined && reference.startsWith('@/'), `應為絕對路徑：${reference}`);
-    assert.ok(reference.endsWith('/a.txt'));
+    assert.ok(reference.endsWith('/outside.txt#L1'));
+  });
+
+  test('工作區外、位於 git 儲存庫的檔案仍可複製行參照', async () => {
+    const api = await getApi();
+    await openWithSelection(outsideRepoFile);
+    const reference = await api.copyReference();
+    assert.ok(reference !== undefined && reference.endsWith('/outside-repo/a.txt'), `應為絕對路徑：${reference}`);
+  });
+
+  test('工作區外的檔案不查 git，回 outside-workspace', async () => {
+    const api = await getApi();
+    await openWithSelection(outsideRepoFile);
+    assert.deepEqual(await api.openRemote({ open: false }), { ok: false, reason: 'outside-workspace' });
   });
 
   test('帶 uri 呼叫（檔案總管右鍵）只給路徑，忽略編輯器選取', async () => {

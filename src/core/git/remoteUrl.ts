@@ -50,6 +50,11 @@ function stripPort(authority: string): string {
 }
 
 function build(authority: string, rawPath: string): RemoteLocation | null {
+  // 只剝得掉第一個 @：x@github.com@evil.com 剩下的 github.com@evil.com 在瀏覽器裡主機是 evil.com，
+  // 卻會被當成 github 組網址，所以主機段殘留 @ 一律不認。
+  if (authority.includes('@')) {
+    return null;
+  }
   const repoPath = rawPath
     .replace(/^\/+/, '')
     .replace(/\/+$/, '')

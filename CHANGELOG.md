@@ -4,6 +4,20 @@
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-09-19
+
+### Security
+
+- 安全性修正：「在遠端網頁開啟目前檔案」只對位於工作區資料夾內（解開 symlink 後比對）且工作區已受信任的檔案執行 `git`。儲存庫可在 `.git/config` 設定 `filter.<名>.clean` 並搭配 `.gitattributes`，讓 `git status` 執行任意指令，這無法用 `-c` 全部關掉；工作區外的檔案改為不查 git，提示「檔案不在工作區內，未查詢 git」。複製行參照不受影響。
+
+## [0.1.2] - 2026-09-19
+
+### Security
+
+- 安全性修正：查詢檔案所在儲存庫狀態時，所有 `git` 指令都加上 `-c core.fsmonitor=false`，開啟外來目錄的檔案後按 `Cmd+Alt+O` 不會再執行該儲存庫 `.git/config` 裡 `core.fsmonitor` 指定的程式。
+- 安全性修正：遠端網址的主機段含有多個 `@`（如 `x@github.com@evil.com:o/r`）時視為無法轉成網頁，不再被認成 GitHub 並開出 `https://github.com@evil.com/...`；託管服務改依主機名比對公開主機與其子網域，不合法的主機名一律不認。
+- 在 `package.json` 宣告不支援受限模式（Restricted Mode）的工作區。
+
 ## [0.1.1] - 2026-09-04
 
 ### Changed

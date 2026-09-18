@@ -11,7 +11,7 @@
 - **在遠端網頁開啟目前檔案**：`Cmd+Alt+O`（Windows/Linux `Ctrl+Alt+O`）用預設瀏覽器開啟該檔案在**目前分支**的網頁，有選取就帶行號錨點。支援 GitHub、GitLab、Bitbucket，自架站可用設定指定格式。
 - **只在遠端真的有這份內容時才開**：沒有 git 儲存庫、detached HEAD、分支沒有 upstream、本機有尚未推送的 commit、檔案尚未加入追蹤、遠端網址不是網頁（本機路徑）——都會跳訊息說明原因而不是開出一個 404。檔案有未提交的修改或本機落後遠端時仍會開，但另外警告行號可能對不上。
 - **右鍵選單**：編輯器內右鍵與檔案總管的檔案右鍵都有這兩個指令；從檔案總管觸發沒有選取，複製的是純路徑、開的是檔案頁。
-- **不限工作區**：遠端偵測直接呼叫 `git` CLI，從別的工作區開的檔案、或根本沒開工作區的單檔，只要在 git 儲存庫內都能開。
+- **只在受信任的工作區內查 git**：遠端偵測直接呼叫 `git` CLI，不依賴內建 Git extension；但只對目前工作區資料夾內（symlink 解開後比對）、且工作區已受信任的檔案執行。工作區外的檔案仍可複製行參照，按 `Cmd+Alt+O` 則提示「檔案不在工作區內，未查詢 git」。原因是 git 會依儲存庫自己的 `.git/config` 執行外部指令（例如 `filter.<名>.clean`），外來目錄的設定不該被觸發。
 
 ## 使用方式
 
@@ -59,7 +59,6 @@
 
 - **開之前先確認遠端真的有這份內容**：沒有 upstream、本機有未推送 commit、檔案 untracked 等情況會擋下並說明原因；GitLens 直接組網址開出去，還沒 push 就是 404。
 - **分支用 upstream 的遠端分支名**，不是本機分支名。
-- **不限工作區**：走 `git` CLI，工作區外的檔案也能開；GitLens 依賴內建 Git extension 認得的儲存庫。
 - `Cmd+Alt+R` 的 `@path#L` 參照格式，GitLens 沒有對應功能（它的 Copy Remote File URL 複製的是網址）。
 
 GitLens 多做的：「Open File on Remote From...」可挑別的分支、tag 或 commit，「Open Commit on Remote」開 commit 頁，以及整套 blame／history／compare。只需要基本的開遠端且不在意 404 的話，兩者擇一即可；要收掉 GitLens 那個右鍵項目可調 `gitlens.menus`。

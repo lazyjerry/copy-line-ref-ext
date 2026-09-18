@@ -88,7 +88,15 @@ async function openRemote(target: Target | undefined, open: boolean): Promise<Op
   if (!checkTarget(target)) {
     return { ok: false, reason: 'no-target' };
   }
-  const query = await querySyncInput(target.uri.fsPath, gitExecutable());
+  const query = await querySyncInput(target.uri.fsPath, gitExecutable(), {
+    trusted: vscode.workspace.isTrusted,
+    folders: (vscode.workspace.workspaceFolders ?? []).filter((folder) => folder.uri.scheme === 'file').map((folder) => folder.uri.fsPath),
+  });
+  if (query.kind === 'skipped') {
+    const why = query.reason === 'untrusted-workspace' ? '工作區未受信任' : '檔案不在工作區內';
+    void vscode.window.showWarningMessage(`${PREFIX}${why}，未查詢 git，無法開啟遠端網頁`);
+    return { ok: false, reason: query.reason };
+  }
   if (query.kind === 'git-not-found') {
     void vscode.window.showErrorMessage(`${PREFIX}${query.message}，可在設定 git.path 指定`);
     return { ok: false, reason: 'git-not-found' };
