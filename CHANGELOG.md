@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- README 的開發段落移除只適用於作者本機環境的步驟。
+
 ## [0.1.3] - 2026-09-19
 
 ### Security
